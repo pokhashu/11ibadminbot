@@ -1,5 +1,4 @@
-# 2021474021:AAFsYXpMR7xahBjvOQPgfVe6KHYwKpXrs1k
-TOKEN = '2021474021:AAFsYXpMR7xahBjvOQPgfVe6KHYwKpXrs1k'
+
 import telebot
 import re
 from bs4 import BeautifulSoup
