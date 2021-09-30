@@ -1,4 +1,6 @@
 
+TOKEN = ''
+
 import telebot
 import re
 from bs4 import BeautifulSoup
@@ -36,20 +38,31 @@ def homework(message):
 def mute(message):
 	time = message.text[7::] * 60
 	bot.restrict_chat_member(chat_id=message.chat.id, user_id=message.reply_to_message.json['from']['id'], can_send_messages = False, until_date=time)
-	bot.send_message(message.chat.id, message.reply_to_message.json['from']['first_name'] + " " + message.reply_to_message.json['from']['last_name'] + " получил мут на " + str(time) + " минут")
-
+	bot.delete_message(message.chat.id, message.id)
 
 @bot.message_handler(commands=['unmute'])
 def unmute(message):
 	bot.restrict_chat_member(chat_id=message.chat.id, user_id=message.reply_to_message.json['from']['id'], can_send_messages = True)
-	bot.send_message(message.chat.id, message.reply_to_message.json['from']['first_name'] + " " + message.reply_to_message.json['from']['last_name'] + " может пиздеть дальше")
-
+	bot.delete_message(message.chat.id, message.id)
 
 
 
 @bot.message_handler(commands=['restrict'])
 def restrict(message):
-	pass
+	perms = message.text[10:17:].split()
+	indx = 0
+	for i in perms:
+		print(i)
+		if perms[indx] == 0:
+			i = False
+		elif int(i) == 1:
+			perms[indx] = True
+		else:
+			perms[indx] = False
+		indx += 1
+	bot.restrict_chat_member(chat_id=message.chat.id, user_id=message.reply_to_message.json['from']['id'],
+	 can_send_media_messages = perms[0], can_send_polls = perms[1], can_change_info = perms[2], can_pin_messages = perms[3])
+	bot.delete_message(message.chat.id, message.id)
 
 @bot.message_handler(commands=['promote'])
 def promote(message):
@@ -57,9 +70,16 @@ def promote(message):
 
 @bot.message_handler(commands=['paec']) #parental advisory explıcıt content
 def paec(message):
-	
+	pass
 	
 
+@bot.message_handler(commands=['all'])
+def all(message):
+	members_id = {}
+	msg = ""
+	for i in members:
+		msg += "@" + bot.get_chat_member(message.chat.id, members[i]) + "\n"
+	bot.send_message(message.chat.id, msg)
 
 
 @bot.message_handler(commands=['schedule'])
@@ -200,7 +220,6 @@ def schedule(message):
 
 
 	
-
 
 
 if __name__ == '__main__':
